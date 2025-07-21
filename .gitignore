@@ -1,0 +1,12 @@
+.snakemake
+.log
+.tiff
+.tif.
+.tsv
+.csv
+.ipynb_checkpoints
+**/results/*
+**/data/*
+**/benchmarks/*
+**/logs/*
+__pycache__

@@ -1,0 +1,75 @@
+files = glob_wildcards(f"../data/{{experiment_name}}/{{sample}}.tif")
+
+rule all:
+    input: 
+        directory(expand("../results/{experiment}/plots", experiment=files.experiment_name)),
+        directory(expand("../results/{experiment}/cellprofiler_outputs", experiment=files.experiment_name)),
+        directory(expand("../results/{experiment}/mip/", experiment=files.experiment_name)),
+        directory(expand("../results/{experiment}/mip", experiment=files.experiment_name))
+    
+rule mip:
+    input:  
+        in_dir = directory("../data/{experiment}")
+    output: 
+        out_dir = directory("../results/{experiment}/mip")
+    params:
+        channels = 4,
+        colors   = "m,r,o,g"  # comma-separated list of colors for the channels
+    log:
+        "logs/{experiment}/mip.log"
+    threads:    
+         workflow.cores * 0.20
+    benchmark:
+        "benchmarks/{experiment}/mip.tsv"
+    shell:  """
+        python scripts/mip.py -i '{input.in_dir}' -o '{output.out_dir}' --channels {params.channels} --lut {params.colors} --log '{log}'
+    """
+
+# 2 CellProfiler
+
+rule cellprofiler:
+    input:
+        in_dir = directory("../results/{experiment}/mip"),
+        pipeline    = "../resources/rdf.cppipe",
+        plugin_dir  = "../resources/plugins"
+    output:
+        # Declare the output folder as a "directory()" target so Snakemake
+        # knows to re‑run the rule if it disappears.
+        out_dir = directory("../results/{experiment}/cellprofiler_outputs")
+    log:
+        "logs/{experiment}/cellprofiler_run.log"
+    threads:
+         workflow.cores * 0.50
+    benchmark:
+        "benchmarks/{experiment}/cellprofiler.tsv"
+    shell:  r"""
+        mkdir -p {output.out_dir}
+
+        cellprofiler \
+            -c -r \
+            -p {input.pipeline} \
+            -i {input.in_dir} \
+            -o '{output.out_dir}' \
+            --plugins-directory {input.plugin_dir} \
+            &> '{log}'
+    """
+
+# 3 Plotting
+rule plot:
+    input:
+        input_dir = directory("../results/{experiment}/cellprofiler_outputs")
+    output: 
+        out_dir = directory("../results/{experiment}/plots")
+    params:
+        regex = 't(?P<time>\d+)_(?P<treatment>[^_]+)[\w]*.tif'  # Regex to match MIP images
+    log:
+        "logs/{experiment}/rdf.log"
+    threads: 
+        workflow.cores * 0.20
+    benchmark:
+        "benchmarks/{experiment}/rdf.tsv"
+    shell:  """
+        mkdir -p {output.out_dir}
+
+        python scripts/rdf.py --regex '{params.regex}' --output-dir '{output.out_dir}' --input-dir '{input.input_dir}' --log-file {log}
+    """
