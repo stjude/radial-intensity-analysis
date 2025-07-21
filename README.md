@@ -23,10 +23,10 @@ Outputs land in `results/<experiment>/`.
 ## Installation
 
 1. **Install Miniconda or Conda** (e.g. [Miniconda](https://docs.conda.io/en/latest/miniconda.html)).
-2. **Install Snakemake ≥ 7**:
+2. **Install the nevironemnt using the yml file**:
 
    ```bash
-   conda install -c conda-forge -c bioconda snakemake
+   conda install -f workflow/environment.yml
    ```
 3. **Clone this repository** and move into it:
 
