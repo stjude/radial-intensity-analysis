@@ -1,15 +1,18 @@
 __pycache__
-.snakemake
+*.snakemake*
 *.log
 *.tiff
 *.tif
 *.tsv
 *.csv
+*.png
+*.txt
 *.ipynb_checkpoints
+*.db
 
 # 1) Ignore everything under these two dirs:
-/data/*
-/results/*
+*/data/*
+*/results/*
 */workflow/benchmarks/*
 */workflow/logs/*
 
