@@ -23,12 +23,18 @@ Outputs land in `results/<experiment>/`.
 ## Installation
 
 1. **Install Miniconda or Conda** (e.g. [Miniconda](https://docs.conda.io/en/latest/miniconda.html)).
-2. **Install the nevironemnt using the yml file**:
+
+2. Install git on the computer if not present
+
+3. **Install the environment using the yml file**:
 
    ```bash
-   conda install -f workflow/environment.yml
+   conda env create -f workflow/environment.yml
    ```
-3. **Clone this repository** and move into it:
+
+Note:** If you encounter issues with java or sql. Check out out Troubleshooting section.
+
+4. **Clone this repository** and move into it:
 
    ```bash
    git clone <repo-url>
@@ -42,8 +48,10 @@ Outputs land in `results/<experiment>/`.
 
 ```
 ├── data/                # raw input TIFF stacks
-│   └── <experiment>/
-│       └── <sample>.tif
+│   ├─── <experiment1>/
+│   │    └── <sample>.tif
+│   ├── <experiment2>/
+│   │    └── <sample>.tif
 ├── resources/           # static assets (CellProfiler .cppipe, plugins)
 │   ├── rdf.cppipe
 │   └── plugins/
@@ -53,8 +61,7 @@ Outputs land in `results/<experiment>/`.
 │   │   ├── mip.py
 │   │   └── rdf.py
 │   └── envs/
-│       ├── ds.yaml
-│       └── cellprofiler.yaml
+│       └── environment.yaml
 ├── results/             # generated outputs
 │   └── <experiment>/
 │       ├── mip/
