@@ -619,7 +619,7 @@ for channel, title in enumerate(rdf_data.channel.unique()):
                 ),
                 "max_distance": dat.loc[dat['intensity'].idxmax(), 'distance'],
                 # "time": name[0], # modified because the groupby above results in a tuple
-                "time": name, # Python 3.8 allows for this
+                "time": name, # Python 3.8 allows for this(?)
             }
         )
     peak_vals = pd.DataFrame.from_records(result)
