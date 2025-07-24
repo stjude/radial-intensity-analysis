@@ -4,8 +4,9 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - bioconda::snakemake=7.32.0
   - jupyterlab=4.4.4
-  - mysqlclient=2.2.7
+  - mysqlclient=1.4.6
   - numpy=1.24.4
   - pandas=2.3.1
   - pip=25.1.1
@@ -13,7 +14,7 @@ dependencies:
   - python-javabridge=4.0.3
   - seaborn=0.13.2
   - setuptools=80.9.0
+  - tifffile=2023.4.22
   - wxpython=4.2.0
-  - bioconda::snakemake=7.32.0
   - pip:
     - cellprofiler==4.2.6

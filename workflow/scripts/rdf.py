@@ -10,7 +10,7 @@ import re
 import logging
 import warnings
 from pathlib import Path
-from typing import List, Dict, Union
+from typing import List, Dict, Union, List
 
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -85,7 +85,7 @@ class CellProfilerParser():
         # optionally open and inspect file if e.g. needed to get columns
         pass
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return []
 
     def analyze(self, df) -> Union[pd.DataFrame, None]:
@@ -113,7 +113,7 @@ class RDFParser(CellProfilerParser):
                 if column.startswith('RDF_')
         ]
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return self.columns + self.id_vars
 
     def analyze(self, df) -> Union[pd.DataFrame, None]:
@@ -155,7 +155,7 @@ class CorrelationParser(CellProfilerParser):
             if column.startswith(measures)
         ]
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return self.columns + (['AreaShape_Area'] if self.reduce else [])
 
     def merge_result(self, result, df, region, merge_fcn):
@@ -189,7 +189,7 @@ class RimEnrichmentParser(CellProfilerParser):
     def _bins(self):
         return range(self.total_bins, self.total_bins-self.bins, -1)
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return [
             f'RadialDistribution_FracAtD_{image}_{bin - self.ignore_last}of{self.total_bins}'
             for image in (self.images + [self.area_normalization])
@@ -237,7 +237,7 @@ class IntensityParser(CellProfilerParser):
         self.locations = locations
         self.total_intens = total_intens
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         result = []
 
         if self.total_intens:
@@ -335,7 +335,7 @@ class BlankParser(CellProfilerParser):
 
 class CountingParser(CellProfilerParser):
     '''Count number of observations for merging.'''
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return ['ObjectNumber']
 
     def merge_result(self, result, df, region, merge_fcn):
@@ -352,7 +352,7 @@ class ImageParser(CellProfilerParser):
         self.map_cols = []
         self.debug = debug_regex
 
-    def get_columns(self) -> list[str]:
+    def get_columns(self) -> List[str]:
         return ['Metadata_FileLocation', 'Metadata_Series', 'ImageNumber']
 
     def analyze(self, df) -> Union[pd.DataFrame, None]:
@@ -618,7 +618,8 @@ for channel, title in enumerate(rdf_data.channel.unique()):
                     / (dat["intensity"].max() - dat["intensity"].min()),
                 ),
                 "max_distance": dat.loc[dat['intensity'].idxmax(), 'distance'],
-                "time": name[0], # modified because the groupby above results in a tuple
+                # "time": name[0], # modified because the groupby above results in a tuple
+                "time": name, # Python 3.8 allows for this
             }
         )
     peak_vals = pd.DataFrame.from_records(result)

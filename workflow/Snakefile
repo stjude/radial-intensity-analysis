@@ -4,7 +4,6 @@ rule all:
     input: 
         directory(expand("../results/{experiment}/plots", experiment=files.experiment_name)),
         directory(expand("../results/{experiment}/cellprofiler_outputs", experiment=files.experiment_name)),
-        directory(expand("../results/{experiment}/mip/", experiment=files.experiment_name)),
         directory(expand("../results/{experiment}/mip", experiment=files.experiment_name))
     
 rule mip:
