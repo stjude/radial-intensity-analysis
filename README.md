@@ -26,13 +26,14 @@ Outputs land in `results/<experiment>/`.
 
 2. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on the computer if not present
 
-    If you are in Windows skip to the [Troubleshooting](#troubleshooting) section instead of step 3.
+    **If you are in Windows skip to the [Troubleshooting](#troubleshooting) section instead of step 3 and then proceed to step 4.**
 
 3. **Install the environment using the yml file**:
 
    ```bash
    conda env create -f workflow/environment.yml
    ```
+    This creates a conda environment named **cellprofiler-smk**
 
     **Note:** If you encounter issues with java or sql. Check out out [Troubleshooting](#troubleshooting) section.
 
@@ -43,6 +44,14 @@ Outputs land in `results/<experiment>/`.
    cd <repo>
    ```
 
+5. Activate the conda environment:
+    ```bash
+    conda activate cellprofiler-smk
+    ```
+6. Run the following to start the analysis:
+    ```bash
+    conda install -c bioconda -c conda-forge snakemake
+    ```
 
 ## Deeper Dive
 
@@ -126,13 +135,30 @@ You can alternatively install from [oracle.com](https://www.oracle.com/java/tech
 Access the [Windows Environment Variables](https://docs.oracle.com/en/database/oracle/machine-learning/oml4r/1.5.1/oread/creating-and-modifying-environment-variables-on-windows.html#GUID-DD6F9982-60D5-48F6-8270-A27EC53807D0) and make sure that both JAVA_HOME and JDK_HOME are set to the location of your JDK installation (one or both may be set during the installation process, depending on the exact installer you used and your configuration during install).
 For each new variable, set its value to the location of your JDK installation (i.e., the location of the folder beginning with 'jdk11'). You can do this by clicking the Browse Directory... button. Usually this is in your 'Program Files' in a folder called 'Java'.
 
-#### Open Command Prompt
+#### Installing Cellprofiler from Source
 
 ``cd`` into the directory where you cloned CellProfiler
 
 Type ``pip install -e .``
- 
-Type ``conda install -c bioconda -c conda-forge snakemake``
+
+At this point, CellProfiler is installed! You may now run CellProfiler by typing ``cellprofiler`` from the command line. To test it out type
+
+```bash 
+cellprofiler --version
+```
+ This should give you the version number of the installed celllprofiler.
+
+If you run into an error with ``charset_normalizer``. Forece reintall the package using:
+
+ ```bash
+pip install --force-reinstall charset-normalizer==3.1.0
+```
+
+Install missing snakemake and seaborn pacakages:
+
+```bash
+conda install -c bioconda -c conda-forge snakemake seaborn``
+```
 If you run into errors, especially any with cellprofiler_core in the stack trace, you may want to also clone and install CellProfiler-core from source; if you do this, you will typically need to also pull core whenever pulling your CellProfiler master.
 
  ```bash
@@ -144,9 +170,7 @@ $ pip3 install -e .
  
 If you encounter any other errors, please get in touch (with the cellprofiler team)!
  
-#### Starting CellProfiler
-At this point, CellProfiler is installed! You may now run CellProfiler by typing cellprofiler from the command line
- 
+
 Change the directory of plugins to the github downloaded plugin folder
 
 ``File > Preferences > Plugin``

@@ -23,7 +23,8 @@ rule all:
 
 rule mip:
     input:
-        in_dir = directory(DATA/"{experiment}")
+        in_dir = directory(DATA/"{experiment}"),
+        script = pathlib.Path("scripts") / "mip.py"
     output:
         out_dir = directory(RESULT/"{experiment}"/"mip")
     params:
@@ -41,9 +42,10 @@ rule mip:
         in_dir  = os.path.normpath(str(input.in_dir))
         out_dir = os.path.normpath(str(output.out_dir))
         log     = os.path.normpath(str(log))
+        script = os.path.normpath(str(input.script))
 
         shell(
-            "python scripts\\mip.py "
+            "python {script} "
             "-i {in_dir} "
             "-o {out_dir} "
             "--channels {params.channels} "
@@ -91,7 +93,8 @@ rule cellprofiler:
 ###############################################################################
 rule plot:
     input:
-        input_dir = directory(RESULT / "{experiment}" / "cellprofiler_outputs")
+        input_dir = directory(RESULT / "{experiment}" / "cellprofiler_outputs"),
+        script = pathlib.Path("scripts") / "rdf.py"
     output:
         out_dir = directory(RESULT / "{experiment}" / "plots")
     params:
@@ -108,9 +111,10 @@ rule plot:
         in_dir = os.path.normpath(str(input.input_dir))
         out_dir = os.path.normpath(str(output.out_dir))
         log = os.path.normpath(str(log))
+        script = os.path.normpath(str(input.script))
 
         shell('''
-            python scripts\\rdf.py \
+            python {script} \
             --output-dir {out_dir} \
             --input-dir {in_dir} \
             --log-file {log} \
