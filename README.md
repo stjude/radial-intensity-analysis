@@ -11,13 +11,21 @@ Place raw experiment folders with TIFF stacks here:
 data/
 ```
 
-### Run
+### Running the pipeline
+
+First you would need to cd into the workflow directory. Assuming you are in the ``radial-intensity-analysis`` directory you would run :
+
+```bash
+cd workflow
+```
+
+Now run the snakemake command to execute the pipeline on the directoires inside data
 
 ```bash
 snakemake -j 8 --use-conda --conda-frontend conda 
 ```
 
-Outputs land in `results/<experiment>/`.
+Outputs of the pipeline can be found in `results/<experiment>/`.
 
 
 ## Installation
@@ -87,7 +95,7 @@ Outputs land in `results/<experiment>/`.
 
 | What you want to change   | Where / how                                                                        |
 | ------------------------- | ---------------------------------------------------------------------------------- |
-| **MIP channels & LUT**    | Edit `channels` / `colors` parameters in rule **mip** inside `Snakefile`           |
+| **MIP channels & LUT**    | Edit `channels` / `colors` parameters in rule **mip** inside `Snakefile`. Max no. of channels: 5. Colors - magenta (m), orange(o), red (r), green (g), blue (b)          |
 | **CellProfiler pipeline** | Replace `resources/rdf.cppipe` and adjust `pipeline` path in rule **cellprofiler** |
 
 ---
@@ -170,6 +178,7 @@ $ pip3 install -e .
  
 If you encounter any other errors, please get in touch (with the cellprofiler team)!
  
+### Changing plugin directory inside Cellprofiler
 
 Change the directory of plugins to the github downloaded plugin folder
 
