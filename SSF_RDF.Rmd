@@ -1,0 +1,96 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+
+```
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+```{r}
+library(dplyr)
+library(lme4)
+library(scales)
+library(lmerTest)
+library(stringr)
+library(purrr)
+library(ggplot2)
+library(cowplot)
+library(tidyverse)
+library(emmeans)
+```
+
+
+```{r}
+library(dunn.test)
+library(PMCMRplus)
+library(ggpubr)
+library(ggsignif)
+`%notin%` <- Negate(`%in%`)
+current_date <- Sys.Date()
+formatted_date <- format(current_date, "%m%d%y")
+print(formatted_date)
+```
+
+
+```{r}
+df.RDF_data <- read.csv('./250826_SSF_rdf_plot_data.csv')%>%
+  mutate(filename = str_extract(treatment, "[^/\\\\]+$")) %>%
+  mutate(channel = str_replace_all(channel, "SURF6", "SSF1"))
+```
+```{r}
+print(unique(df.RDF_data$filename))
+```
+
+
+```{r fig.width = 6.5, fig.height = 5}
+df.RDF_plot <- df.RDF_data %>%
+  group_by(channel, distance) %>%
+  dplyr::summarize(
+    mean_norm_intensity = mean(norm_intensity),
+    se_norm_intensity = sd(norm_intensity) / sqrt(n())
+  ) %>%
+  mutate(
+    mean_se_min = mean_norm_intensity - se_norm_intensity,
+    mean_se_max = mean_norm_intensity + se_norm_intensity
+  )
+ggplot(df.RDF_plot , aes(x = distance,  y = mean_norm_intensity, color = channel, fill = channel)) +
+  geom_ribbon(aes(ymin = mean_se_min, ymax = mean_se_max), alpha = 0.2, color = NA) +
+  geom_line(size = 1) +
+  theme_minimal() +
+  labs(x = "Radius (um)", y = "Normalized Intensity", title = "RDF Plot")+
+  scale_color_manual(values = c("rRNA" = "magenta",
+                                "DFC" = "red",
+                                "FC" = "orange",
+                                "GC" = "green",
+                                "SSF1" = "blue"))+
+  scale_fill_manual(values = c("rRNA" = "magenta",
+                                "DFC" = "red",
+                                "FC" = "orange",
+                                "GC" = "green",
+                                "SSF1" = "blue"))#+ 
+#  theme(legend.position = 'none')
+```
+
+```{r fig.width = 16.5, fig.height = 15}
+ggplot(df.RDF_data, aes(x = distance,  y = norm_intensity, color = channel, fill = channel)) +
+  #geom_ribbon(aes(ymin = mean_se_min, ymax = mean_se_max), alpha = 0.2, color = NA) +
+  geom_line(size = 1) +
+  theme_minimal() +
+  facet_wrap(~filename, ncol = 6)+
+  labs(x = "Radius", y = "Normalized Intensity", title = "Individual RDF Plots, SSF1 stained samples")+
+  scale_color_manual(values = c("rRNA" = "magenta",
+                                "DFC" = "red",
+                                "FC" = "orange",
+                                "GC" = "green",
+                                "SSF1" = "blue"))+
+  scale_fill_manual(values = c("rRNA" = "magenta",
+                                "DFC" = "red",
+                                "FC" = "orange",
+                                "GC" = "green",
+                                "SSF1" = "blue"))#+ 
+#  theme(legend.position = 'none')
+```
+
