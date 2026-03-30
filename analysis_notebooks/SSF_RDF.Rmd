@@ -36,7 +36,7 @@ print(formatted_date)
 
 
 ```{r}
-df.RDF_data <- read.csv('./250826_SSF_rdf_plot_data.csv')%>%
+df.RDF_data <- read.csv('../Results/250826_SSF_rdf_plot_data.csv')%>%
   mutate(filename = str_extract(treatment, "[^/\\\\]+$")) %>%
   mutate(channel = str_replace_all(channel, "SURF6", "SSF1"))
 ```
