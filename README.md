@@ -183,3 +183,14 @@ If you encounter any other errors, please get in touch (with the cellprofiler te
 Change the directory of plugins to the github downloaded plugin folder
 
 ``File > Preferences > Plugin``
+
+
+### Plotting results of Cellprofiler pipeline
+
+Install R-notebook from cran.r-project.org
+
+Ensure that results are in "Results" directory
+
+Ensure that read.csv() functions point to the correct files in R. notebooks.
+
+Run notebooks.
