@@ -6,9 +6,9 @@ __pycache__
 *.tsv
 *.csv
 *.png
-*.txt
 *.ipynb_checkpoints
 *.db
+*.sarif
 
 # 1) Ignore everything under these two dirs:
 */data/*
