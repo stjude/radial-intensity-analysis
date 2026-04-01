@@ -1,5 +1,6 @@
 # radial-intensity-analysis
-A snakemake workflow for performing radial intensity analysis of signal in the nucleolus
+
+A snakemake workflow for performing radial intensity analysis of signal in the nucleolus. This code was adapted from the pipeline that was published by Quinodoz et al. [[1]](#ref-1). The link to their repository can be found [here](https://github.com/SoftLivingMatter/image-analysis-quinodoz-jiang-2024).
 
 ## Quick Overview
 
@@ -13,7 +14,7 @@ data/
 
 ### Running the pipeline
 
-First you would need to cd into the workflow directory. Assuming you are in the ``radial-intensity-analysis`` directory you would run :
+First you would need to cd into the workflow directory. Assuming you are in the `radial-intensity-analysis` directory you would run :
 
 ```bash
 cd workflow
@@ -40,35 +41,27 @@ Run notebooks.
 ## Installation
 
 1. **Install Miniconda or Conda** (e.g. [Miniconda](https://docs.conda.io/en/latest/miniconda.html)).
-
 2. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on the computer if not present
-
-    **If you are in Windows skip to the [Troubleshooting](#troubleshooting) section instead of step 3 and then proceed to step 4.**
-
+  **If you are in Windows skip to the [Troubleshooting](#troubleshooting) section instead of step 3 and then proceed to step 4.**
 3. **Install the environment using the yml file**:
-
-   ```bash
+  ```bash
    conda env create -f workflow/environment.yml
-   ```
+  ```
     This creates a conda environment named **cellprofiler-smk**
-
     **Note:** If you encounter issues with java or sql. Check out out [Troubleshooting](#troubleshooting) section.
-
 4. **Clone this repository** and move into it:
-
-   ```bash
+  ```bash
    git clone <repo-url>
    cd <repo>
-   ```
-
+  ```
 5. Activate the conda environment:
-    ```bash
+  ```bash
     conda activate cellprofiler-smk
-    ```
+  ```
 6. Run the following to start the analysis:
-    ```bash
+  ```bash
     conda install -c bioconda -c conda-forge snakemake
-    ```
+  ```
 
 ## Deeper Dive
 
@@ -102,10 +95,12 @@ Run notebooks.
 
 ### How to tweak the workflow
 
-| What you want to change   | Where / how                                                                        |
-| ------------------------- | ---------------------------------------------------------------------------------- |
-| **MIP channels & LUT**    | Edit `channels` / `colors` parameters in rule **mip** inside `Snakefile`. Max no. of channels: 5. Colors - magenta (m), orange(o), red (r), green (g), blue (b)          |
-| **CellProfiler pipeline** | Replace `resources/rdf.cppipe` and adjust `pipeline` path in rule **cellprofiler** |
+
+| What you want to change   | Where / how                                                                                                                                                     |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MIP channels & LUT**    | Edit `channels` / `colors` parameters in rule **mip** inside `Snakefile`. Max no. of channels: 5. Colors - magenta (m), orange(o), red (r), green (g), blue (b) |
+| **CellProfiler pipeline** | Replace `resources/rdf.cppipe` and adjust `pipeline` path in rule **cellprofiler**                                                                              |
+
 
 ---
 
@@ -116,9 +111,9 @@ If you run into issues or have improvements, feel free to open an issue or pull 
 ### Windows Pre-installations
 
 These instructions are for installing CellProfiler 4.0+, and < 5, which will run on Python 3. To install the previous 3.1.9 release, see this [page](https://github.com/CellProfiler/CellProfiler/wiki/Source-installation-(Windows)/e208c4f38cad30d21a3062a5dcf74788811aa39c).
- 
+
 #### Downloading CellProfiler's libraries and dependencies
- 
+
 Download and install packages for [Python 3.8](http://www.python.org/downloads/windows) 64-bit on your machine  
 
 We recommend starting with a fresh install of Python (in a conda environment).
@@ -128,23 +123,26 @@ When installing, it's a good idea to enable the "Add python to path" option
 #### Download and install [Microsoft Visual C++ Redistributable 2015-2022](https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 Select the version appropriate for your architecture. On windows, you can determine this by going to Control Panel then searching for System and looking next to "System type:" for your processor architecture.
+
 #### Download and install [Microsoft Visual Studio C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 NOTE: Make sure to check 'Desktop development with C++' under Desktop and Mobile in the installer
 
 Also make sure the following packages are installed ( Go inside Visual Studio's "Modify" option to check):
-* .NET Framework 4.8 development tools (targeting pack and SDK)
-* C++ CMake tools for Windows
-* MSVC v143 - VS 2022 C++ x64/x86 build tools (choose the latest)
-* MSVC v140 - VS 2015 C++ x64/x86 build tools (choose the latest)
-* SQL Server Data Tools - Build Tools
-* C++ core features
-* C++ Build Tools core features
-* MSBuid support for LLVM (clang-cl) toolset
-* Windows 11 SDK (if on Windows 11) els Windows 10 SDK - highest version number
-* Window Universal C Runtime
+
+- .NET Framework 4.8 development tools (targeting pack and SDK)
+- C++ CMake tools for Windows
+- MSVC v143 - VS 2022 C++ x64/x86 build tools (choose the latest)
+- MSVC v140 - VS 2015 C++ x64/x86 build tools (choose the latest)
+- SQL Server Data Tools - Build Tools
+- C++ core features
+- C++ Build Tools core features
+- MSBuid support for LLVM (clang-cl) toolset
+- Windows 11 SDK (if on Windows 11) els Windows 10 SDK - highest version number
+- Window Universal C Runtime
 
 #### Download and install [Java JDK 11](https://adoptopenjdk.net/) (The OpenJDK distribution is now called Temurin)
+
 Click on the default installation icon on the website, It will install the appropriate one for your system.
 
 You can alternatively install from [oracle.com](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) if you'd like, though you will need to make an Oracle account.
@@ -154,43 +152,36 @@ For each new variable, set its value to the location of your JDK installation (i
 
 #### Installing Cellprofiler from Source
 
-``cd`` into the directory where you cloned CellProfiler
+`cd` into the directory where you cloned CellProfiler
 
-Type ``pip install -e .``
+Type `pip install -e .`
 
-At this point, CellProfiler is installed! You may now run CellProfiler by typing ``cellprofiler`` from the command line. To test it out type
+At this point, CellProfiler is installed! You may now run CellProfiler by typing `cellprofiler` from the command line. To test it out type
 
-```bash 
+```bash
 cellprofiler --version
 ```
+
  This should give you the version number of the installed celllprofiler.
 
-If you run into an error with ``charset_normalizer``. Forece reintall the package using:
-
- ```bash
-pip install --force-reinstall charset-normalizer==3.1.0
-```
+If you run into an error with `charset_normalizer`. Forece reintall the package using:
 
 Install missing snakemake and seaborn pacakages:
 
 ```bash
 conda install -c bioconda -c conda-forge snakemake seaborn``
 ```
+
 If you run into errors, especially any with cellprofiler_core in the stack trace, you may want to also clone and install CellProfiler-core from source; if you do this, you will typically need to also pull core whenever pulling your CellProfiler master.
 
- ```bash
-$ git clone https://github.com/CellProfiler/core.git
-$ cd core 
-$ git switch 4.2.x
-$ pip3 install -e .
-```
- 
 If you encounter any other errors, please get in touch (with the cellprofiler team)!
- 
+
 ### Changing plugin directory inside Cellprofiler
 
 Change the directory of plugins to the github downloaded plugin folder
 
-``File > Preferences > Plugin``
+`File > Preferences > Plugin`
 
+## References
 
+**[1]** Quinodoz, S.A., Jiang, L., Abu-Alfa, A.A., Comi, T.J., Zhao, H., Yu, Q., Wiesner, L.W., Botello, J.F., Donlic, A., Soehalim, E., et al. (2025). Mapping and engineering RNA-driven architecture of the multiphase nucleolus. *Nature* 644, 557–566. [10.1038/s41586-025-09207-4](https://doi.org/10.1038/s41586-025-09207-4).
