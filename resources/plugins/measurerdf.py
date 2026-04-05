@@ -4,8 +4,6 @@
 #
 #################################
 
-import centrosome.cpmorphology
-import centrosome.zernike
 import numpy as np
 import scipy.ndimage
 import scipy
