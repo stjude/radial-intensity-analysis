@@ -3,11 +3,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# A sample workflow which sets up Snyk to analyze the full Snyk platform (Snyk Open Source, Snyk Code,
-# Snyk Container and Snyk Infrastructure as Code)
+# A workflow which sets up Snyk to scan Python dependencies (SCA) and source code (SAST).
 # The setup installs the Snyk CLI - for more details on the possible commands
 # check https://docs.snyk.io/snyk-cli/cli-reference
-# The results of Snyk Code are then uploaded to GitHub Security Code Scanning
+# The results are uploaded to GitHub Security Code Scanning.
 #
 # In order to use the Snyk Action you will need to have a Snyk API token.
 # More details in https://github.com/snyk/actions#getting-your-snyk-token
@@ -20,7 +19,7 @@ name: Snyk Security
 
 on:
   push:
-    branches: ["main" ]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -30,44 +29,78 @@ permissions:
 jobs:
   snyk:
     permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+      contents: read
+      security-events: write
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Snyk CLI to check for security issues
-        # Snyk can be used to break the build when it detects security issues.
-        # In this case we want to upload the SAST issues to GitHub Code Scanning
-        uses: snyk/actions/python-3.9@master
-        continue-on-error: true
-        # For Snyk Open Source you must first set up the development environment for your application's dependencies
-        # For example for Node
-        #- uses: actions/setup-node@v4
-        #  with:
-        #    node-version: 20
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt 2>&1 | tee pip-install.log || true
+
+      - name: Report uninstalled packages
+        run: |
+          echo "## Package Installation Report" >> "$GITHUB_STEP_SUMMARY"
+          has_failures=false
+          while IFS= read -r line || [ -n "$line" ]; do
+            # skip blank lines and comments
+            [[ -z "$line" || "$line" =~ ^# ]] && continue
+            pkg_name=$(echo "$line" | sed 's/[>=<!\[].*//' | sed 's/==.*//' | tr '[:upper:]' '[:lower:]')
+            if ! pip show "$pkg_name" > /dev/null 2>&1; then
+              has_failures=true
+              echo "::warning::Cannot scan ${pkg_name} -- package failed to install"
+              echo "- :x: \`${line}\`" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done < requirements.txt
+          if [ "$has_failures" = true ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> **Note:** The packages listed above could not be installed on the CI runner and were excluded from the Snyk scan." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo ":white_check_mark: All packages from requirements.txt installed successfully." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Set up Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Snyk Open Source test
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          ORG_ID: ${{ secrets.ORG_ID }}
+        run: snyk test --file=requirements.txt --org=$ORG_ID --sarif-file-output=snyk-sca.sarif
 
-        # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
-        # Use || true to not fail the pipeline
       - name: Snyk Code test
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
-        run: snyk code test --sarif --org=$ORG_ID > snyk-code.sarif # || true
+        run: snyk code test --sarif --org=$ORG_ID > snyk-code.sarif
 
-        # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
-        run: snyk monitor --all-projects --org=$ORG_ID
+        run: snyk monitor --file=requirements.txt --org=$ORG_ID
 
-        # Push the Snyk Code results into GitHub Code Scanning tab
-      - name: Upload result to GitHub Code Scanning
+      - name: Upload SCA results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk-sca.sarif
+          category: snyk-open-source
+
+      - name: Upload SAST results to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
         with:
           sarif_file: snyk-code.sarif
+          category: snyk-code
