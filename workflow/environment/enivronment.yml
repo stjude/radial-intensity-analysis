@@ -7,14 +7,12 @@ dependencies:
   - bioconda::snakemake=7.32.4
   - jupyterlab=4.4.4
   - mysqlclient=1.4.6
-  - numpy=1.24.4
+  - numpy=1.24.*
   - pandas=2.3.1
   - pip=24.3.1
-  - python=3.9.23
-  - python-javabridge=4.0.3
+  - python=3.9.3
   - seaborn=0.13.2
   - setuptools=75.3.0
-  - tifffile==2023.7.10
-  - wxpython=4.2.0
+  - tifffile=2023.7.10
   - pip:
-    - cellprofiler==4.2.6
+    - cellprofiler-core==4.2.6
