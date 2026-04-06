@@ -82,7 +82,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
-        run: snyk code test --sarif --org=$ORG_ID > snyk-code.sarif
+        run: snyk code test --org=$ORG_ID --sarif-file-output=snyk-code.sarif
 
       - name: Snyk Open Source monitor
         continue-on-error: true
@@ -92,14 +92,14 @@ jobs:
         run: snyk monitor --file=requirements.txt --org=$ORG_ID
 
       - name: Upload SCA results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: snyk-sca.sarif
           category: snyk-open-source
 
       - name: Upload SAST results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: snyk-code.sarif
