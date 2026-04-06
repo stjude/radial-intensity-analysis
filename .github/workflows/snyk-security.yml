@@ -87,6 +87,7 @@ jobs:
         uses: snyk/actions/setup@master
 
       - name: Snyk Open Source test
+        shell: bash -el {0}
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -94,6 +95,7 @@ jobs:
         run: snyk test --file=requirements.txt --org=$ORG_ID --sarif-file-output=snyk-sca.sarif
 
       - name: Snyk Code test
+        shell: bash -el {0}
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -101,6 +103,7 @@ jobs:
         run: snyk code test --org=$ORG_ID --sarif-file-output=snyk-code.sarif
 
       - name: Snyk Open Source monitor
+        shell: bash -el {0}
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
