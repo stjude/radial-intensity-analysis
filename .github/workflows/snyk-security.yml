@@ -39,7 +39,7 @@ jobs:
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: "3.9"
+          python-version: "3.8"
           channels: conda-forge,defaults
           activate-environment: snyk-env
           auto-activate-base: false
