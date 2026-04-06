@@ -36,25 +36,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: "3.9"
+          channels: conda-forge,defaults
+          activate-environment: snyk-env
+          auto-activate-base: false
 
-      - name: Install dependencies
+      - name: Install conda packages
+        shell: bash -el {0}
+        run: |
+          conda install -y -c conda-forge \
+            mysqlclient=1.4.6 \
+            numpy=1.24.4 \
+            python-javabridge \
+            wxPython=4.2.0 \
+            jupyterlab \
+            seaborn \
+            pandas
+
+      - name: Install pip packages
+        shell: bash -el {0}
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt 2>&1 | tee pip-install.log || true
 
       - name: Report uninstalled packages
+        shell: bash -el {0}
         run: |
           echo "## Package Installation Report" >> "$GITHUB_STEP_SUMMARY"
           has_failures=false
           while IFS= read -r line || [ -n "$line" ]; do
-            # skip blank lines and comments
             [[ -z "$line" || "$line" =~ ^# ]] && continue
             pkg_name=$(echo "$line" | sed 's/[>=<!\[].*//' | sed 's/==.*//' | tr '[:upper:]' '[:lower:]')
-            if ! pip show "$pkg_name" > /dev/null 2>&1; then
+            if ! pip show "$pkg_name" > /dev/null 2>&1 && ! conda list "$pkg_name" 2>/dev/null | grep -q "$pkg_name"; then
               has_failures=true
               echo "::warning::Cannot scan ${pkg_name} -- package failed to install"
               echo "- :x: \`${line}\`" >> "$GITHUB_STEP_SUMMARY"
