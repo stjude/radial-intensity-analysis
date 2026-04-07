@@ -114,6 +114,32 @@ jobs:
           ORG_ID: ${{ secrets.ORG_ID }}
         run: snyk monitor --file=requirements.txt --org=$ORG_ID
 
+      - name: Sanitize SARIF security-severity values
+        if: always()
+        shell: bash -el {0}
+        run: |
+          for sarif in snyk-sca.sarif snyk-code.sarif; do
+            if [ -f "$sarif" ]; then
+              python -c "
+          import json, sys
+          with open('$sarif') as f:
+              data = json.load(f)
+          for run in data.get('runs', []):
+              for rule in run.get('tool', {}).get('driver', {}).get('rules', []):
+                  for prop_key in ('properties', 'defaultConfiguration'):
+                      props = rule.get(prop_key, {})
+                      sev = props.get('security-severity')
+                      if sev is not None:
+                          try:
+                              float(sev)
+                          except (ValueError, TypeError):
+                              props['security-severity'] = '0.0'
+          with open('$sarif', 'w') as f:
+              json.dump(data, f)
+          "
+            fi
+          done
+
       - name: Upload SCA results to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v4
         if: always()
