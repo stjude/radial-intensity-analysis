@@ -1,5 +1,7 @@
 # radial-intensity-analysis
 
+[![DOI](https://zenodo.org/badge/1023866814.svg)](https://doi.org/10.5281/zenodo.20331551)
+
 A snakemake workflow for performing radial intensity analysis of signal in the nucleolus. This code was adapted from the pipeline that was published by Quinodoz et al. [[1]](#ref-1). The link to their repository can be found [here](https://github.com/SoftLivingMatter/image-analysis-quinodoz-jiang-2024).
 
 ## Quick Overview
@@ -187,3 +189,4 @@ Change the directory of plugins to the github downloaded plugin folder
 <a id="ref-1"></a>**[1]** Quinodoz, S.A., Jiang, L., Abu-Alfa, A.A., Comi, T.J., Zhao, H., Yu, Q., Wiesner, L.W., Botello, J.F., Donlic, A., Soehalim, E., et al. (2025). Mapping and engineering RNA-driven architecture of the multiphase nucleolus. *Nature* 644, 557–566. [10.1038/s41586-025-09207-4](https://doi.org/10.1038/s41586-025-09207-4).
 
 <a id="ref-2"></a>**[2]** Dogra P, Ferrolino MC, Khatun S, Tolbert M, Miao Q, Pruett-Miller SM, Pitre A, Tripathi S, Campbell GE, Bajpai R, Freyaldenhoven T, Gibbs E, Park CG, Kriwacki RW. Granular component sub-phases direct ribosome biogenesis in the nucleolus. *bioRxiv* [Preprint]. 2025 Mar 4:2025.03.01.640913. [doi: 10.1101/2025.03.01.640913](https://doi.org/10.1101/2025.03.01.640913). [PMID: 40093048](https://pubmed.ncbi.nlm.nih.gov/40093048/); [PMCID: PMC11908144](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11908144/).
+
